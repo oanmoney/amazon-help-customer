@@ -1,6 +1,22 @@
 [package]
 name = "amazon-help-customer"
 version = "0.1.0"
+entrypoint = "run"
 
-[scripts]
-start = ["php", "-S", "0.0.0.0:8080", "-t", "public", "index.php"]
+# Runtime PHP chính thức của Wasmer
+[dependencies]
+"php/php" = ">=8.3.0"
+
+# Map mã nguồn vào /app
+[fs]
+"/app" = "."
+
+# Lệnh chạy chính
+[[command]]
+name = "run"
+module = "php/php:php"
+runner = "wasi"
+
+# Chạy built-in server: document root = /app/public
+[command.annotations.wasi]
+main-args = ["-t", "/app/public", "-S", "0.0.0.0:8080"]
